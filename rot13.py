@@ -34,9 +34,12 @@ def rot13_decrypt():
     return decrypted_message
 
 
-choice = input("Do you want to encrypt or decrypt? ")
-
-if choice.lower() == "encrypt":
-    print(rot13_encrypt())
-else:
-    print(rot13_decrypt())
+while True:
+    choice = input("Do you want to encrypt or decrypt? ")
+    if choice.lower() == "encrypt":
+        print(rot13_encrypt())
+    elif choice.lower() == "decrypt":
+        print(rot13_decrypt())
+    else:
+        print("Thanks for using me !")
+        break

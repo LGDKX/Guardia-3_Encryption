@@ -39,9 +39,12 @@ def caesar_decrypt():
     return possible_decryption
 
 
-choice = input("Do you want to encrypt or decrypt? ")
-
-if choice.lower() == "encrypt":
-    print(caesar_encrypt())
-else:
-    print(caesar_decrypt())
+while True:
+    choice = input("Do you want to encrypt or decrypt? ")
+    if choice.lower() == "encrypt":
+        print(caesar_encrypt())
+    elif choice.lower() == "decrypt":
+        print(caesar_decrypt())
+    else:
+        print("Thanks for using me !")
+        break
