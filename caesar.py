@@ -40,10 +40,10 @@ def caesar_decrypt():
 
 
 while True:
-    choice = input("Do you want to encrypt or decrypt? ")
-    if choice.lower() == "encrypt":
+    choice = input("Do you want to encrypt or decrypt? ").lower()
+    if choice == "encrypt":
         print(caesar_encrypt())
-    elif choice.lower() == "decrypt":
+    elif choice == "decrypt":
         print(caesar_decrypt())
     else:
         print("Thanks for using me !")
