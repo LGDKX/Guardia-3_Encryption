@@ -36,13 +36,16 @@ def caesar_decrypt():
                 decrypted_message += char
         # Store the decryption result with its shift
         possible_decryption[shift] = decrypted_message
-    return possible_decryption
+    # Output all possible decryptions
+    print("All possible decryptions:")
+    for i, decryption in enumerate(possible_decryption, 1):
+        print(f"{i}: {decryption}")
 
 
 while True:
     choice = input("Do you want to encrypt or decrypt? ").lower()
     if choice == "encrypt":
-        print(caesar_encrypt())
+        print("Encrypted message: ", caesar_encrypt())
     elif choice == "decrypt":
         print(caesar_decrypt())
     else:

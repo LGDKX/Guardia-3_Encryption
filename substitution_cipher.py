@@ -33,7 +33,7 @@ def substitution_cipher_decrypt():
     alphabet = "abcdefghijklmnopqrstuvwxyz"
 
     # Test all 26 possible shifts
-    possible_decryptions = []
+    possible_decryption = []
     for shift in range(26):
         reverse_key = {alphabet[(i + shift) % 26]: alphabet[i] for i in range(26)}
         decrypted_message = ""
@@ -47,11 +47,11 @@ def substitution_cipher_decrypt():
             else:
                 decrypted_message += char
 
-        possible_decryptions.append(decrypted_message)
+        possible_decryption.append(decrypted_message)
 
     # Output all possible decryptions
     print("All possible decryptions:")
-    for i, decryption in enumerate(possible_decryptions, 1):
+    for i, decryption in enumerate(possible_decryption, 1):
         print(f"{i}: {decryption}")
 
 
