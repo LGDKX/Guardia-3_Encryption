@@ -6,7 +6,6 @@ import base64
 #######################################################################
 # Importing os library in order to interact with the Operating System #
 #######################################################################
-import os
 
 # Character frequency based on English text
 CHAR_FREQUENCY = {'a': 8.2, 'b': 1.5, 'c': 2.8, 'd': 4.3, 'e': 12.7, 'f': 2.2, 'g': 2.0, 'h': 6.1, 'i': 7.0, 'j': 0.2,
