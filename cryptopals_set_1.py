@@ -177,6 +177,38 @@ def decrypt_single_byte_xor():
         print(f"Decrypted message: {plaintext.decode('utf-8', errors='ignore')}")
 
 
+def repeating_key_xor():
+    #############################################################
+    # Encrypt text using repeating-key XOR                     #
+    #                                                          #
+    # Args:                                                    #
+    #     plaintext (str): The text to encrypt                 #
+    #     key (str): The repeating key for encryption          #
+    #                                                          #
+    # Call:                                                    #
+    #     input(): To get plaintext and key from the user      #
+    #                                                          #
+    # Return:                                                  #
+    #     ciphertext (str): The encrypted text in hex format   #
+    #############################################################
+
+    # Prompt the user for plaintext
+    plaintext = input("Enter the plaintext to encrypt: ").strip()
+
+    # Prompt the user for the key
+    key = input("Enter the encryption key: ").strip()
+
+    if not key:
+        print("Key cannot be empty.")
+        return
+
+    # Encrypt using repeating-key XOR
+    ciphertext = bytes([ord(plaintext[i]) ^ ord(key[i % len(key)]) for i in range(len(plaintext))])
+
+    # Convert ciphertext to hexadecimal and display
+    print("Ciphertext (hex):", ciphertext.hex())
+
+
 def choice():
     ################################################
     # Allow the user to choose the function to use #
@@ -191,7 +223,7 @@ def choice():
     ################################################
     while True:
         use = input("What do you want to do? \n 1) Hex to base64 \n 2) XOR two equal-length buffers \n 3) Decrypt a "
-                    "single byte XOR \n 4) Exit \n Enter your choice : ")
+                    "single byte XOR \n 4) Repeating key XOR \n 5) Exit \n Enter your choice : ")
 
         if use == "1":
             hex_to_base64()
@@ -200,6 +232,8 @@ def choice():
         elif use == "3":
             decrypt_single_byte_xor()
         elif use == "4":
+            repeating_key_xor()
+        elif use == "5":
             print("Exiting...")
             break
         else:
