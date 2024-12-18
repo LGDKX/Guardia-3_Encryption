@@ -15,17 +15,20 @@ MORSE_CODE_DICT = {
 }
 REVERSE_MORSE_CODE_DICT = {value: key for key, value in MORSE_CODE_DICT.items()}
 
+
 # Function to encrypt plain text to Morse code
 def morse_encrypt():
     message = input("Please enter the message to encrypt: ").upper()
     encrypted_message = ' '.join(MORSE_CODE_DICT.get(char, '') for char in message)
     return encrypted_message
 
+
 # Function to decrypt Morse code to plain text
 def morse_decrypt():
     message = input("Please enter the Morse code to decrypt (separate each code by space): ")
     decrypted_message = ''.join(REVERSE_MORSE_CODE_DICT.get(code, '') for code in message.split())
     return decrypted_message
+
 
 # Main menu loop
 while True:
