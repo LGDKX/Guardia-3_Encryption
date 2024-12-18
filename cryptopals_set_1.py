@@ -3,6 +3,11 @@
 #######################################################################
 import base64
 
+# Character frequency based on English text
+CHAR_FREQUENCY = {'a': 8.2, 'b': 1.5, 'c': 2.8, 'd': 4.3, 'e': 12.7, 'f': 2.2, 'g': 2.0, 'h': 6.1, 'i': 7.0, 'j': 0.2,
+                  'k': 0.8, 'l': 4.0, 'm': 2.4, 'n': 6.7, 'o': 7.5, 'p': 1.9, 'q': 0.1, 'r': 6.0, 's': 6.3, 't': 9.1,
+                  'u': 2.8, 'v': 1.0, 'w': 2.4, 'x': 0.2, 'y': 2.0, 'z': 0.1, ' ': 19.0}
+
 
 def hex_bytes(prompt):
     ##############################################################
@@ -81,4 +86,95 @@ def equal_size_xor():
     print("XOR result (hex):", xor_result.hex())
 
 
-equal_size_xor()
+def score_text(text):
+    ###############################################################
+    # Function to score text based on English character frequency #
+    #                                                             #
+    # Arg:                                                        #
+    #     text : plaintext to score                               #
+    #                                                             #
+    # Return:                                                     #
+    #     score (float): Sum of character frequencies             #
+    ###############################################################
+    return sum(CHAR_FREQUENCY.get(chr(byte).lower(), 0) for byte in text)
+
+
+def single_byte_xor(ciphertext, key):
+    ##################################################
+    # XOR a ciphertext with a single-byte key        #
+    #                                                #
+    # Args:                                          #
+    #     ciphertext (bytes): The encoded message    #
+    #     key (int): The single-byte key to XOR with #
+    #                                                #
+    # Return:                                        #
+    #     decrypted (bytes): Resulting plaintext     #
+    ##################################################
+    return bytes([byte ^ key for byte in ciphertext])
+
+
+def decrypt_single_byte_xor():
+    #######################################################
+    # Decrypt a hex string XOR'd with a single-byte key   #
+    #                                                     #
+    # Call:                                               #
+    #     hex_bytes(): to get the ciphertext              #
+    #     score_text(): to evaluate plaintext             #
+    #     single_byte_xor(): to XOR with single-byte keys #
+    #######################################################
+    # Get hex input from the user
+    hex_string = hex_bytes("Enter the XOR'd hex string: ")
+
+    best_score = 0
+    best_key = None
+    best_plaintext = None
+
+    # Try every possible single-byte key (0–255)
+    for key in range(256):
+        plaintext = single_byte_xor(hex_string, key)
+        try:
+            # Score the plaintext based on English character frequency
+            score = score_text(plaintext)
+            if score > best_score:
+                best_score = score
+                best_key = key
+                best_plaintext = plaintext
+        except UnicodeDecodeError:
+            # Ignore invalid plaintexts
+            continue
+
+    # Output the best result
+    print(f"Key: {best_key} (character: {chr(best_key)})")
+    print(f"Decrypted message: {best_plaintext.decode('utf-8', errors='ignore')}")
+
+
+def choice():
+    ################################################
+    # Allow the user to choose the function to use #
+    #                                              #
+    # Call:                                        #
+    #     hex_to_base64()                          #
+    #     equal_size_xor()                         #
+    #     decrypt_single_byte_xor()                #
+    #                                              #
+    # Raises                                       #
+    #     Invalid input                            #
+    ################################################
+    while True:
+        use = input("What do you want to do? \n 1) Hex to base64 \n 2) XOR two equal-length buffers \n 3) Decrypt a "
+                    "single byte XOR \n 4) Exit \n Enter your choice : ")
+
+        if use == "1":
+            hex_to_base64()
+        elif use == "2":
+            equal_size_xor()
+        elif use == "3":
+            decrypt_single_byte_xor()
+        elif use == "4":
+            print("Exiting...")
+            break
+        else:
+            print("Invalid choice. Please enter a valid number.")
+
+
+choice()
