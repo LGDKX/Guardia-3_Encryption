@@ -3,10 +3,6 @@
 #######################################################################
 import base64
 
-#######################################################################
-# Importing os library in order to interact with the Operating System #
-#######################################################################
-
 # Character frequency based on English text
 CHAR_FREQUENCY = {'a': 8.2, 'b': 1.5, 'c': 2.8, 'd': 4.3, 'e': 12.7, 'f': 2.2, 'g': 2.0, 'h': 6.1, 'i': 7.0, 'j': 0.2,
                   'k': 0.8, 'l': 4.0, 'm': 2.4, 'n': 6.7, 'o': 7.5, 'p': 1.9, 'q': 0.1, 'r': 6.0, 's': 6.3, 't': 9.1,
@@ -209,6 +205,16 @@ def repeating_key_xor():
     print("Ciphertext (hex):", ciphertext.hex())
 
 
+def hamming_distance():
+    string1 = input("Enter the first string: ")
+    string2 = input("Enter the second string: ")
+
+    if len(string1) != len(string2):
+        raise ValueError("Strings must be of equal length.")
+
+    print("Hamming distance: ", sum(c1 != c2 for c1, c2 in zip(string1, string2)))
+
+
 def choice():
     ################################################
     # Allow the user to choose the function to use #
@@ -240,4 +246,4 @@ def choice():
             print("Invalid choice. Please enter a valid number.")
 
 
-choice()
+hamming_distance()
