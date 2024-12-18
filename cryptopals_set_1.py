@@ -3,6 +3,11 @@
 #######################################################################
 import base64
 
+#######################################################################
+# Importing os library in order to interact with the Operating System #
+#######################################################################
+import os
+
 # Character frequency based on English text
 CHAR_FREQUENCY = {'a': 8.2, 'b': 1.5, 'c': 2.8, 'd': 4.3, 'e': 12.7, 'f': 2.2, 'g': 2.0, 'h': 6.1, 'i': 7.0, 'j': 0.2,
                   'k': 0.8, 'l': 4.0, 'm': 2.4, 'n': 6.7, 'o': 7.5, 'p': 1.9, 'q': 0.1, 'r': 6.0, 's': 6.3, 't': 9.1,
@@ -122,30 +127,55 @@ def decrypt_single_byte_xor():
     #     score_text(): to evaluate plaintext             #
     #     single_byte_xor(): to XOR with single-byte keys #
     #######################################################
-    # Get hex input from the user
-    hex_string = hex_bytes("Enter the XOR'd hex string: ")
+    # Prompt the user to specify a file or single input
+    input_path = input("Enter a file path or press Enter to input a single hex string: ").strip()
 
-    best_score = 0
-    best_key = None
-    best_plaintext = None
+    # Function to decrypt a single line
+    def process_line(hex_string):
+        best_score = 0
+        best_key = None
+        best_plaintext = None
 
-    # Try every possible single-byte key (0–255)
-    for key in range(256):
-        plaintext = single_byte_xor(hex_string, key)
+        # Try every possible single-byte key (0–255)
+        for key in range(256):
+            plaintext = single_byte_xor(hex_string, key)
+            try:
+                # Score the plaintext based on English character frequency
+                score = score_text(plaintext)
+                if score > best_score:
+                    best_score = score
+                    best_key = key
+                    best_plaintext = plaintext
+            except UnicodeDecodeError:
+                # Ignore invalid plaintexts
+                continue
+
+        return best_key, best_plaintext
+
+    # Check if input is a file path
+    if input_path:
         try:
-            # Score the plaintext based on English character frequency
-            score = score_text(plaintext)
-            if score > best_score:
-                best_score = score
-                best_key = key
-                best_plaintext = plaintext
-        except UnicodeDecodeError:
-            # Ignore invalid plaintexts
-            continue
-
-    # Output the best result
-    print(f"Key: {best_key} (character: {chr(best_key)})")
-    print(f"Decrypted message: {best_plaintext.decode('utf-8', errors='ignore')}")
+            with open(input_path, 'r') as file:
+                print("Processing file...")
+                for line_number, line in enumerate(file, start=1):
+                    line = line.strip()
+                    try:
+                        # Use hex_bytes to validate and parse each line
+                        hex_string = bytes.fromhex(line)
+                        key, plaintext = process_line(hex_string)
+                        print(f"Line {line_number}: {line}")
+                        print(f"Key: {key} (character: {chr(key)})")
+                        print(f"Decrypted message: {plaintext.decode('utf-8', errors='ignore')}\n")
+                    except ValueError:
+                        print(f"Skipping invalid hex line {line_number}: {line}")
+        except FileNotFoundError:
+            print("File not found. Please enter a valid file path.")
+    else:
+        # Use hex_bytes to validate and parse a single input
+        hex_string = hex_bytes("Enter the XOR'd hex string: ")
+        key, plaintext = process_line(hex_string)
+        print(f"Key: {key} (character: {chr(key)})")
+        print(f"Decrypted message: {plaintext.decode('utf-8', errors='ignore')}")
 
 
 def choice():
