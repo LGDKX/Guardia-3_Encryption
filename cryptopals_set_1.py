@@ -36,7 +36,7 @@ def hex_to_base64():
     #                                                       #
     # Args:                                                 #
     #     message (hex): message to be encrypted            #
-    #     encoded_message (base64-bytes): encrypted message #
+    #     encoded_message (base64-bytes): encoded message   #
     #                                                       #
     # Call:                                                 #
     #     hex_bytes()                                       #
@@ -68,7 +68,7 @@ def equal_size_xor():
     #     hex_bytes()                                       #
     #                                                       #
     # Raises:                                               #
-    #     Different buffer size                             #
+    #     SizeError : If the buffers are of different size  #
     #########################################################
     # Get the two buffers with proper input validation
     buffer1 = hex_bytes("Please enter the first buffer (hex): ")
@@ -76,7 +76,7 @@ def equal_size_xor():
 
     # Check if the buffers are of equal size
     if len(buffer1) != len(buffer2):
-        print(f"Error: Buffers must be of equal size. Got {len(buffer1)} and {len(buffer2)} bytes.")
+        print(f"SizeError: Buffers must be of equal size. Got {len(buffer1)} and {len(buffer2)} bytes.")
         return
 
     # Perform XOR
@@ -92,6 +92,9 @@ def score_text(text):
     #                                                             #
     # Arg:                                                        #
     #     text : plaintext to score                               #
+    #                                                             #
+    # Call:                                                       #
+    #     CHAR_FREQUENCY dictionary                               #
     #                                                             #
     # Return:                                                     #
     #     score (float): Sum of character frequencies             #
@@ -114,14 +117,19 @@ def single_byte_xor(ciphertext, key):
 
 
 def decrypt_single_byte_xor():
-    #######################################################
-    # Decrypt a hex string XOR'd with a single-byte key   #
-    #                                                     #
-    # Call:                                               #
-    #     hex_bytes(): to get the ciphertext              #
-    #     score_text(): to evaluate plaintext             #
-    #     single_byte_xor(): to XOR with single-byte keys #
-    #######################################################
+    #################################################################################
+    # Decrypt a hex string XOR'd with a single-byte key                             #
+    #                                                                               #
+    # Call:                                                                         #
+    #     hex_bytes():                                                              #
+    #     score_text():                                                             #
+    #     single_byte_xor():                                                        #
+    #                                                                               #
+    # Raises:                                                                       #
+    #     FileNotFoundError: If the specified file path is invalid.                 #
+    #     ValueError: If the input hex string cannot be parsed.                     #
+    #     UnicodeDecodeError: If the plaintext contains invalid Unicode characters. #
+    #################################################################################
     # Prompt the user to specify a file or single input
     input_path = input("Enter a file path or press Enter to input a single hex string: ").strip()
 
@@ -174,7 +182,7 @@ def decrypt_single_byte_xor():
 
 
 def repeating_key_xor():
-    #############################################################
+    ############################################################
     # Encrypt text using repeating-key XOR                     #
     #                                                          #
     # Args:                                                    #
@@ -186,7 +194,10 @@ def repeating_key_xor():
     #                                                          #
     # Return:                                                  #
     #     ciphertext (str): The encrypted text in hex format   #
-    #############################################################
+    #                                                          #
+    # Raises:                                                  #
+    #      KeyNotFound : If the key is empty                   #
+    ############################################################
 
     # Prompt the user for plaintext
     plaintext = input("Enter the plaintext to encrypt: ").strip()
@@ -195,7 +206,7 @@ def repeating_key_xor():
     key = input("Enter the encryption key: ").strip()
 
     if not key:
-        print("Key cannot be empty.")
+        print("KeyNotFound: Key cannot be empty.")
         return
 
     # Encrypt using repeating-key XOR
@@ -206,6 +217,19 @@ def repeating_key_xor():
 
 
 def hamming_distance(string1, string2):
+    ##########################################################################
+    # Calculate the hamming distance of binary strings (1+1=0, 0+0=1, 1+0=1) #
+    #                                                                        #
+    # Args:                                                                  #
+    #     string1: The first string                                          #
+    #     string2: The second string                                         #
+    #                                                                        #
+    # Return:                                                                #
+    #     result (float): Hamming distance value                             #
+    #                                                                        #
+    # Raises:                                                                #
+    #      ValueError : If the strings are not of equal size                 #
+    ##########################################################################
     if len(string1) != len(string2):
         raise ValueError("Strings must be of equal length.")
 
@@ -214,12 +238,41 @@ def hamming_distance(string1, string2):
 
 
 def hamming_debug():
+    ##########################################
+    # Debug hamming_distance()               #
+    #                                        #
+    # Args:                                  #
+    #     string1: The first string          #
+    #     string2: The second string         #
+    #                                        #
+    # Call:                                  #
+    #     hamming_distance()                 #
+    #                                        #
+    # Raises:                                #
+    #      KeyNotFound : If the key is empty #
+    ##########################################
     string1 = ''.join(format(ord(char), '08b') for char in input("Enter the first string: "))
     string2 = ''.join(format(ord(char), '08b') for char in input("Enter the second string: "))
-    hamming_distance(string1, string2)
+    result = hamming_distance(string1, string2)
+    print(f"Hamming distance: {result}")
 
 
 def key_size():
+    ##############################################
+    # Determine key size for challenge 6         #
+    #                                            #
+    # Args:                                      #
+    #     string1: The first string              #
+    #     string2: The second string             #
+    #     result : The hamming distance          #
+    #     final : The normalized value           #
+    #                                            #
+    # Call:                                      #
+    #     hamming_distance()                     #
+    #                                            #
+    # Raises:                                    #
+    #      LowData : In case of string too short #
+    ##############################################
     # Read the Base64 file and decode it
     with open(input("Please enter the file path: "), "r") as file:
         base64_content = file.read()
@@ -236,15 +289,18 @@ def key_size():
         string2 = binary_string[-i * 8:]  # Convert to bit length
 
         if len(string1) < i * 8 or len(string2) < i * 8:
-            print(f"Insufficient data for key size {i}")
+            print(f"LowData: Insufficient data for key size {i}")
             continue
 
         result = hamming_distance(string1, string2)
+        # Normalize the hamming distance
         final = result / i
+        # Append the result to the list
         final_values.append((i, final))
         print(f"For i = {i}, the normalized key size is: {final}")
         print("--------------------------------------------------")
 
+    # Find the best key (lowest normalized value)
     best_key_size, smallest_final = min(final_values, key=lambda x: x[1])
     print(f"\nThe best key size is: {best_key_size} with the smallest normalized Hamming distance: {smallest_final}")
 
