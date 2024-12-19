@@ -210,8 +210,6 @@ def hamming_distance(string1, string2):
         raise ValueError("Strings must be of equal length.")
 
     result = sum(c1 != c2 for c1, c2 in zip(string1, string2))
-    print("Hamming distance: ", result)
-
     return result
 
 
@@ -222,18 +220,33 @@ def hamming_debug():
 
 
 def key_size():
-    for i in range(2, 41):
-        print(f"Key size: {i}")
+    # Read the Base64 file and decode it
+    with open(input("Please enter the file path: "), "r") as file:
+        base64_content = file.read()
+        binary_data = base64.b64decode(base64_content)
 
-        string = ''.join(format(ord(char), '08b') for char in input("Enter the string: "))
+    # Convert binary data to a binary string
+    binary_string = ''.join(format(byte, '08b') for byte in binary_data)
 
-        string1 = string[:i]
-        string2 = string[-i:]
+    final_values = []
+
+    for i in range(2, 40):
+        # Extract the first and last i bits
+        string1 = binary_string[:i * 8]  # Convert to bit length
+        string2 = binary_string[-i * 8:]  # Convert to bit length
+
+        if len(string1) < i * 8 or len(string2) < i * 8:
+            print(f"Insufficient data for key size {i}")
+            continue
 
         result = hamming_distance(string1, string2)
-        final = result/i
+        final = result / i
+        final_values.append((i, final))
         print(f"For i = {i}, the normalized key size is: {final}")
         print("--------------------------------------------------")
+
+    best_key_size, smallest_final = min(final_values, key=lambda x: x[1])
+    print(f"\nThe best key size is: {best_key_size} with the smallest normalized Hamming distance: {smallest_final}")
 
 
 def choice():
