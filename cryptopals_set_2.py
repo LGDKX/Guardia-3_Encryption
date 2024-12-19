@@ -10,9 +10,6 @@ def pkcs7_padding() -> bytes:
     return data + padding
 
 
-padded_data = pkcs7_padding()
-print(padded_data)
-
 def choice():
     ################################################
     # Allow the user to choose the function to use #
@@ -26,11 +23,12 @@ def choice():
     #     Invalid input                            #
     ################################################
     while True:
-        use = input("What do you want to do? \n 1)  \n 2)  \n 3) "
+        use = input("What do you want to do? \n 1) PKCS7 Padding \n 2)  \n 3) "
                     " \n 4)  \n 5) Exit \n Enter your choice : ")
 
         if use == "1":
-            print("Creating it")
+            padded_data = pkcs7_padding()
+            print(padded_data)
         elif use == "2":
             print("Creating it")
         elif use == "3":
