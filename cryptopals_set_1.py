@@ -206,9 +206,8 @@ def repeating_key_xor():
 
 
 def hamming_distance():
-    string1 = input("Enter the first string: ")
-    string2 = input("Enter the second string: ")
-
+    string1 = ''.join(format(ord(char), '08b') for char in input("Enter the first string: "))
+    string2 = ''.join(format(ord(char), '08b') for char in input("Enter the second string: "))
     if len(string1) != len(string2):
         raise ValueError("Strings must be of equal length.")
 
