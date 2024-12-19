@@ -205,13 +205,35 @@ def repeating_key_xor():
     print("Ciphertext (hex):", ciphertext.hex())
 
 
-def hamming_distance():
-    string1 = ''.join(format(ord(char), '08b') for char in input("Enter the first string: "))
-    string2 = ''.join(format(ord(char), '08b') for char in input("Enter the second string: "))
+def hamming_distance(string1, string2):
     if len(string1) != len(string2):
         raise ValueError("Strings must be of equal length.")
 
-    print("Hamming distance: ", sum(c1 != c2 for c1, c2 in zip(string1, string2)))
+    result = sum(c1 != c2 for c1, c2 in zip(string1, string2))
+    print("Hamming distance: ", result)
+
+    return result
+
+
+def hamming_debug():
+    string1 = ''.join(format(ord(char), '08b') for char in input("Enter the first string: "))
+    string2 = ''.join(format(ord(char), '08b') for char in input("Enter the second string: "))
+    hamming_distance(string1, string2)
+
+
+def key_size():
+    for i in range(2, 41):
+        print(f"Key size: {i}")
+
+        string = ''.join(format(ord(char), '08b') for char in input("Enter the string: "))
+
+        string1 = string[:i]
+        string2 = string[-i:]
+
+        result = hamming_distance(string1, string2)
+        final = result/i
+        print(f"For i = {i}, the normalized key size is: {final}")
+        print("--------------------------------------------------")
 
 
 def choice():
@@ -245,4 +267,4 @@ def choice():
             print("Invalid choice. Please enter a valid number.")
 
 
-hamming_distance()
+key_size()
