@@ -175,3 +175,42 @@
     </script>
 </body>
 </html>
+
+<?php
+$conn = new mysqli("localhost", "root", "root", "vulnerable_db");
+
+if ($_POST['register']) {
+    $name = $_POST['name'];
+    $lastname = $_POST['lastname'];
+    $password = md5($_POST['password']); // Use MD5 for weak hashing
+
+    $query = "INSERT INTO users (name, lastname, password) VALUES ('$name', '$lastname', '$password')";
+    $conn->query($query);
+    echo "Registration successful";
+}
+
+if ($_POST['login']) {
+    $name = $_POST['name'];
+    $password = md5($_POST['password']);
+
+    $query = "SELECT * FROM users WHERE name = '$name' AND password = '$password'"; // SQL Injection possible
+    $result = $conn->query($query);
+
+    if ($result->num_rows > 0) {
+        echo "Login successful";
+    } else {
+        echo "Login failed";
+    }
+}
+
+if ($_POST['vote']) {
+    $username = $_POST['username'];
+    $vote = $_POST['vote'];
+
+    // No CSRF protection, unsanitized input
+    $query = "INSERT INTO votes (username, vote) VALUES ('$username', '$vote')";
+    $conn->query($query);
+
+    echo "Vote submitted for $vote";
+}
+?>
