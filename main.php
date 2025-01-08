@@ -2,6 +2,45 @@
 // Connect to the database
 $conn = new mysqli("localhost", "root", "", "vulnerable_db");
 
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Create database if it doesn't exist
+$dbCreationQuery = "CREATE DATABASE IF NOT EXISTS `vulnerable_db`";
+if ($conn->query($dbCreationQuery) === TRUE) {
+    echo "<script>console.log('Database created or already exists');</script>";
+} else {
+    die("Database creation failed: " . $conn->error);
+}
+
+// Switch to the newly created database
+$conn->select_db("vulnerable_db");
+
+// Create `users` table
+$usersTableQuery = "CREATE TABLE IF NOT EXISTS `users` (
+    `name` VARCHAR(40),
+    `lastname` VARCHAR(40),
+    `password` VARCHAR(40)
+)";
+if ($conn->query($usersTableQuery) === TRUE) {
+    echo "<script>console.log('Table `users` created or already exists');</script>";
+} else {
+    die("Table creation failed: " . $conn->error);
+}
+
+// Create `votes` table
+$votesTableQuery = "CREATE TABLE IF NOT EXISTS `votes` (
+    `username` VARCHAR(40),
+    `vote` VARCHAR(6)
+)";
+if ($conn->query($votesTableQuery) === TRUE) {
+    echo "<script>console.log('Table `votes` created or already exists');</script>";
+} else {
+    die("Table creation failed: " . $conn->error);
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Registration
     if (isset($_POST['register'])) {
